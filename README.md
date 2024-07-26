@@ -56,7 +56,7 @@ pip install llmdocparser
 ## Usage
 
 ```python
-from llmdocparser import get_image_content
+from llmdocparser.llm_parser import get_image_content
 
 content = get_image_content(
     llm_type="azure",
@@ -65,7 +65,8 @@ content = get_image_content(
     max_concurrency=5,
     azure_deployment="azure-gpt-4o",
     azure_endpoint="your_azure_endpoint",
-    api_key="your_api_key"
+    api_key="your_api_key",
+    api_version="your_api_version"
 )
 print(content)
 ```

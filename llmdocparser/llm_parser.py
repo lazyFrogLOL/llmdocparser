@@ -61,6 +61,7 @@ if __name__ == "__main__":
         max_concurrency=5,
         azure_deployment="azure-gpt-4o",
         azure_endpoint=base_url,
-        api_key=api_key
+        api_key=api_key,
+        api_version="2024-02-01"
     )
     print(content)

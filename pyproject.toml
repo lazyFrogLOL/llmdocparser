@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "llmdocparser"
-version = "0.1.1"
+version = "0.1.2"
 description = "Using LLM to parse PDF and get better chunk for retrieval"
 authors = ["FreddieChan <FreddieChan992@gmail.com>"]
 readme = "README.md"
@@ -11,7 +11,6 @@ packages = [
 [tool.poetry.dependencies]
 python = ">=3.9,<4.0"
 setuptools="71.1.0"
-GeneralAgent = "^0.3.21"
 shapely = "^2.0.1"
 pymupdf = "^1.24.7"
 python-dotenv = "^1.0.0"
