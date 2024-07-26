@@ -1,0 +1,36 @@
+[tool.poetry]
+name = "llmdocparser"
+version = "0.1.0"
+description = "Using LLM to parse PDF and get better chunk for retrieval"
+authors = ["FreddieChan <FreddieChan992@gmail.com>"]
+readme = "README.md"
+packages = [
+    { include = "llmdocparser" },
+]
+
+[tool.poetry.dependencies]
+python = ">=3.9,<4.0"
+setuptools="71.1.0"
+GeneralAgent = "^0.3.21"
+shapely = "^2.0.1"
+pymupdf = "^1.24.7"
+python-dotenv = "^1.0.0"
+paddlepaddle="2.6.1"
+paddleocr="2.8.1"
+openpyxl="3.1.5"
+premailer="3.10.0"
+numpy="1.26.4"
+langchain="0.2.11"
+langchain_openai="0.1.17"
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.3"
+pytest-asyncio = "^0.21.1"
+
+[[tool.poetry.source]]
+name = "mirrors"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple/"
+priority = "primary"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
