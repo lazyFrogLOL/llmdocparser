@@ -43,6 +43,30 @@ def merge_blocks(block1, block2):
     return new_key, (new_coords, new_order)
 
 
+def merge_consecutive_title_title_text(blocks):
+    """合并连续的title、title、text块"""
+    merged = []
+    i = 0
+    while i < len(blocks) - 2:
+        if (blocks[i][0] == 'title' and
+                blocks[i + 1][0] == 'title' and
+                blocks[i + 2][0] == 'text' and
+                blocks[i][1][1] + 1 == blocks[i + 1][1][1] and
+                blocks[i + 1][1][1] + 1 == blocks[i + 2][1][1]):
+
+            merged_block = merge_blocks(blocks[i], blocks[i + 1])
+            merged_block = merge_blocks(merged_block, blocks[i + 2])
+            merged.append(merged_block)
+            i += 3
+        else:
+            merged.append(blocks[i])
+            i += 1
+
+    # 添加剩余的块
+    merged.extend(blocks[i:])
+    return merged
+
+
 def is_in_corner(block, page_width, page_height, corner_threshold=100):
     """检查块是否在页面角落"""
     x1, y1, x2, y2 = block[1][0]
@@ -57,7 +81,7 @@ def merge_title_and_text(blocks):
     merged = []
     i = 0
     while i < len(blocks):
-        if blocks[i][0] == 'title' and i + 1 < len(blocks) and blocks[i+1][0] == 'text':
+        if blocks[i][0] == 'title' and i + 1 < len(blocks) and 'text' in blocks[i+1][0]:
             title_block = blocks[i]
             text_block = blocks[i+1]
             if (is_aligned_left(title_block, text_block) or is_centered(title_block, text_block)) and \
@@ -169,7 +193,7 @@ def merge_equation_with_neighbors(blocks):
     return merged
 
 
-def filter_small_header_footer(blocks, min_area=200):
+def filter_small_header_footer(blocks, min_area=400):
     """过滤掉面积小于min_area的Header或Footer"""
     return [block for block in blocks if not (block[0] in ['header', 'footer'] and
             calculate_area(block[1][0]) < min_area)]
@@ -185,4 +209,5 @@ def merge_all(blocks, page_width, page_height):
     blocks = merge_consecutive_texts(blocks)
     blocks = merge_equation_with_neighbors(blocks)
     blocks = filter_small_header_footer(blocks)
+    blocks = merge_consecutive_title_title_text(blocks)
     return blocks

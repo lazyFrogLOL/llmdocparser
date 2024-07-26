@@ -44,20 +44,25 @@ def merge_blocks(blocks: List[Tuple[str, Tuple]], page_height: int, page_width: 
     return merge_all(blocks, page_height=page_height, page_width=page_width)
 
 
-def save_cropped_images(img: Image, blocks: List[Tuple[str, Tuple]], output_dir: str, page_num: int) -> List[Dict]:
+def save_cropped_images(img: Image, blocks: List[Tuple[str, Tuple]], output_dir: str, page_num: int, filename: str) -> List[Dict]:
     """保存裁剪后的图像"""
     image_property_list = []
     for block in blocks:
         x1, y1, x2, y2 = block[1][0]
         element = block[0]
         cropped_img = Image.fromarray(img).crop((x1, y1, x2, y2))
-        name = f"{output_dir}output/page_{page_num + 1}_{element}_{x1}_{y1}_{x2}_{y2}.png"
+        name = f"{output_dir}/page_{filename}_{page_num + 1}_{element}_{x1}_{y1}_{x2}_{y2}.png"
         cropped_img.save(name)
-        image_property_list.append({name: element})
+        image_property_list.append({
+            "filepath": name,
+            "type": element,
+            "page_no": page_num + 1,
+            "filename": filename
+        })
     return image_property_list
 
 
-def parse_rects(img: Image, page_num: int, page: fitz.Page, output_dir: str) -> List[Dict]:
+def parse_rects(img: Image, page_num: int, page: fitz.Page, output_dir: str, filename: str) -> List[Dict]:
     """解析页面中的矩形并合并相邻的矩形"""
     result = engine(img)
     initial_layout = get_initial_layout(img, result)
@@ -68,7 +73,7 @@ def parse_rects(img: Image, page_num: int, page: fitz.Page, output_dir: str) -> 
     h, w, _ = img.shape
     merged_blocks = merge_blocks(blocks, page_height=h, page_width=w)
 
-    image_property_list = save_cropped_images(img, merged_blocks, output_dir, page_num)
+    image_property_list = save_cropped_images(img, merged_blocks, output_dir, page_num, filename)
 
     return image_property_list
 
@@ -78,9 +83,10 @@ def parse_pdf_to_images(pdf_path: str, output_dir: str = './') -> List[List]:
     Parse PDF to images and save to output_dir.
     """
     img_infos = []
+    filename = pdf_path.split("/")[-1].split(".")[0]
     with fitz.open(pdf_path) as pdf:
-        # for pg in range(0, pdf.page_count):
-        for pg in range(1, 2):
+        for pg in range(0, pdf.page_count):
+        # for pg in range(1, 2):
             page = pdf[pg]
             mat = fitz.Matrix(2, 2)
             pm = page.get_pixmap(matrix=mat, alpha=False)
@@ -91,7 +97,7 @@ def parse_pdf_to_images(pdf_path: str, output_dir: str = './') -> List[List]:
 
             img = Image.frombytes("RGB", [pm.width, pm.height], pm.samples)
             img = cv2.cvtColor(np.array(img), cv2.COLOR_RGB2BGR)
-            image_property_list = parse_rects(img, pg, page, output_dir)
+            image_property_list = parse_rects(img, pg, page, output_dir, filename)
             img_infos.append(image_property_list)
 
     return img_infos
