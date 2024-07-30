@@ -56,7 +56,7 @@ if __name__ == "__main__":
 
     content = get_image_content(
         llm_type="azure",
-        pdf_path="example/attention_is_all_you_need.pdf",
+        pdf_path="llmdocparser/example/attention_is_all_you_need.pdf",
         output_dir="output/",
         max_concurrency=5,
         azure_deployment="azure-gpt-4o",

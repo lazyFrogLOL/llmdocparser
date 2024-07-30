@@ -102,8 +102,8 @@ def merge_figure_and_caption(blocks):
     merged = []
     i = 0
     while i < len(blocks):
-        if blocks[i][0] in ['figure', 'figure caption'] and i + 1 < len(blocks) and \
-           blocks[i+1][0] in ['figure', 'figure caption']:
+        if blocks[i][0] in ['figure', 'figure_caption'] and i + 1 < len(blocks) and \
+           blocks[i+1][0] in ['figure', 'figure_caption']:
             merged.append(merge_blocks(blocks[i], blocks[i+1]))
             i += 2
         else:
@@ -118,7 +118,7 @@ def merge_table_and_caption_or_reference(blocks):
     i = 0
     while i < len(blocks):
         if blocks[i][0] == 'table' and i + 1 < len(blocks) and \
-           blocks[i+1][0] in ['table caption', 'reference']:
+           blocks[i+1][0] in ['table caption', 'reference', 'text']:
             merged.append(merge_blocks(blocks[i], blocks[i+1]))
             i += 2
         else:
@@ -152,19 +152,21 @@ def merge_overlapping_blocks(blocks):
 
 
 def merge_consecutive_texts(blocks):
-    """合并连续的text块，如果下方text面积是上方的4倍以上"""
+    """合并连续的text块，不限制相邻"""
     merged = []
     i = 0
     while i < len(blocks):
-        if blocks[i][0] == 'text' and i + 1 < len(blocks) and blocks[i+1][0] == 'text':
-            area1 = calculate_area(blocks[i][1][0])
-            area2 = calculate_area(blocks[i+1][1][0])
-            if area2 >= 4 * area1:
-                merged.append(merge_blocks(blocks[i], blocks[i+1]))
-                i += 2
-            else:
-                merged.append(blocks[i])
-                i += 1
+        if blocks[i][0] == 'text':
+            # 从当前 text 块开始，查找连续的 text 块
+            j = i + 1
+            while j < len(blocks) and blocks[j][0] == 'text':
+                j += 1
+            # 合并从 i 到 j 的所有 text 块
+            merged_block = blocks[i]
+            for k in range(i + 1, j):
+                merged_block = merge_blocks(merged_block, blocks[k])
+            merged.append(merged_block)
+            i = j  # 更新 i 的值，跳过已合并的 text 块
         else:
             merged.append(blocks[i])
             i += 1
@@ -201,6 +203,12 @@ def filter_small_header_footer(blocks, min_area=400):
 
 def merge_all(blocks, page_width, page_height):
     """应用所有合并规则和过滤规则"""
+    if len(blocks) < 5:
+        merged_block = blocks[0]
+        for block in blocks[1:]:
+            merged_block = merge_blocks(merged_block, block)
+        return [merged_block]
+
     blocks = filter_small_corner_blocks(blocks, page_width, page_height)
     blocks = merge_overlapping_blocks(blocks)
     blocks = merge_title_and_text(blocks)

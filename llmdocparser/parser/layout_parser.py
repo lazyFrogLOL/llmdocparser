@@ -6,6 +6,7 @@ from llmdocparser.parser.rect_merge import merge_all
 from paddleocr import PPStructure
 import numpy as np
 import cv2
+import os
 
 engine = PPStructure(table=False, ocr=False, show_log=True, structure_version="PP-StructureV2")
 
@@ -39,17 +40,24 @@ def supplement_missing_figures(layout: List[Dict], images: List[Dict]) -> List[D
     return layout
 
 
-def merge_blocks(blocks: List[Tuple[str, Tuple]], page_height: int, page_width: int) -> List[Tuple[str, Tuple]]:
+def merge_page_blocks(blocks: List[Tuple[str, Tuple]], page_height: int, page_width: int) -> List[Tuple[str, Tuple]]:
     """合并块"""
     return merge_all(blocks, page_height=page_height, page_width=page_width)
 
 
-def save_cropped_images(img: Image, blocks: List[Tuple[str, Tuple]], output_dir: str, page_num: int, filename: str) -> List[Dict]:
-    """保存裁剪后的图像"""
+def save_cropped_images(img: Image, blocks: List[Tuple[str, Tuple]], output_dir: str, page_num: int, filename: str, page_height, page_width) -> List[Dict]:
+    """保存裁剪后的图像，将裁剪区域往外扩充 20 个像素"""
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
     image_property_list = []
     for block in blocks:
         x1, y1, x2, y2 = block[1][0]
         element = block[0]
+        # 扩充裁剪区域
+        x1 = max(0, x1 - 20)  # 防止越界
+        y1 = max(0, y1 - 20)
+        x2 = min(page_width, x2 + 20)
+        y2 = min(page_height, y2 + 20)
         cropped_img = Image.fromarray(img).crop((x1, y1, x2, y2))
         name = f"{output_dir}/page_{filename}_{page_num + 1}_{element}_{x1}_{y1}_{x2}_{y2}.png"
         cropped_img.save(name)
@@ -71,9 +79,17 @@ def parse_rects(img: Image, page_num: int, page: fitz.Page, output_dir: str, fil
 
     blocks = [(k, v) for block in layout_with_figures for k, v in block.items()]
     h, w, _ = img.shape
-    merged_blocks = merge_blocks(blocks, page_height=h, page_width=w)
+    merged_blocks = merge_page_blocks(blocks, page_height=h, page_width=w)
 
-    image_property_list = save_cropped_images(img, merged_blocks, output_dir, page_num, filename)
+    image_property_list = save_cropped_images(
+        img,
+        merged_blocks,
+        output_dir,
+        page_num,
+        filename,
+        page_height=h,
+        page_width=w
+    )
 
     return image_property_list
 
@@ -86,7 +102,6 @@ def parse_pdf_to_images(pdf_path: str, output_dir: str = './') -> List[List]:
     filename = pdf_path.split("/")[-1].split(".")[0]
     with fitz.open(pdf_path) as pdf:
         for pg in range(0, pdf.page_count):
-        # for pg in range(1, 2):
             page = pdf[pg]
             mat = fitz.Matrix(2, 2)
             pm = page.get_pixmap(matrix=mat, alpha=False)
