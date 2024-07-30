@@ -4,6 +4,7 @@ from langchain.schema import SystemMessage, HumanMessage
 from PIL import Image
 from io import BytesIO
 import base64
+from langchain_community.callbacks import get_openai_callback
 
 
 # This Default Prompt Using Chinese and could be changed to other languages.
@@ -72,7 +73,12 @@ def analyze_images_batch(
             batch_config["max_concurrency"] = max_concurrency
 
         # 调用LLM模型的batch方法
-        responses = llm.batch(message_batches, config=batch_config)
+        with get_openai_callback() as cb:
+            responses = llm.batch(message_batches, config=batch_config)
+            print(f"Total Tokens: {cb.total_tokens}")
+            print(f"Prompt Tokens: {cb.prompt_tokens}")
+            print(f"Completion Tokens: {cb.completion_tokens}")
+            print(f"Total Cost (USD): ${cb.total_cost}")
 
         # 提取每个响应的内容
         contents = [response.content for response in responses]

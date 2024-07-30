@@ -92,3 +92,15 @@ If using Azure, the azure_deployment and azure_endpoint parameters need to be pa
 * base_url: str
   
   OpenAI Compatible Server url. Detail: [OpenAI-Compatible Server](https://python.langchain.com/v0.2/docs/integrations/llms/vllm/#openai-compatible-server)
+
+## Cost
+
+Using the 'Attention Is All You Need' paper for analysis, the model chosen is GPT-4o, costing as follows:
+```
+Total Tokens: 50359
+Prompt Tokens: 38914
+Completion Tokens: 11445
+Total Cost (USD): $0.3662449999999998
+```
+Average cost per page: $0.0244
+
