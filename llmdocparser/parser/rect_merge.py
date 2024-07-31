@@ -98,18 +98,22 @@ def merge_title_and_text(blocks):
 
 
 def merge_figure_and_caption(blocks):
-    """合并相邻的Figure和Figure caption块"""
+    """合并相邻的Figure和Figure caption块，或者Figure和Text块"""
     merged = []
     i = 0
     while i < len(blocks):
-        if blocks[i][0] in ['figure', 'figure_caption'] and i + 1 < len(blocks) and \
-           blocks[i+1][0] in ['figure', 'figure_caption']:
-            merged.append(merge_blocks(blocks[i], blocks[i+1]))
-            i += 2
+        if blocks[i][0] == 'figure' and i + 1 < len(blocks):
+            if blocks[i+1][0] in ['figure_caption', 'figure', 'text']:
+                merged.append(merge_blocks(blocks[i], blocks[i+1]))
+                i += 2
+            else:
+                merged.append(blocks[i])
+                i += 1
         else:
             merged.append(blocks[i])
             i += 1
     return merged
+
 
 
 def merge_table_and_caption_or_reference(blocks):
@@ -127,7 +131,7 @@ def merge_table_and_caption_or_reference(blocks):
     return merged
 
 
-def filter_small_corner_blocks(blocks, page_width, page_height, min_area=100):
+def filter_small_corner_blocks(blocks, page_width, page_height, min_area=200):
     """过滤掉面积小于min_area且位于页面角落的块"""
     return [block for block in blocks if not (calculate_area(block[1][0]) < min_area and
             is_in_corner(block, page_width, page_height))]
@@ -201,6 +205,27 @@ def filter_small_header_footer(blocks, min_area=400):
             calculate_area(block[1][0]) < min_area)]
 
 
+def is_block_contained(block1, block2):
+    """检查block1是否包含于block2中"""
+    x1, y1, x2, y2 = block1[1][0]
+    x3, y3, x4, y4 = block2[1][0]
+    return x1 >= x3 and y1 >= y3 and x2 <= x4 and y2 <= y4
+
+
+def remove_contained_blocks(blocks):
+    """删除包含于其他块中的块"""
+    filtered_blocks = []
+    for i in range(len(blocks)):
+        is_contained = False
+        for j in range(len(blocks)):
+            if i != j and is_block_contained(blocks[i], blocks[j]):
+                is_contained = True
+                break
+        if not is_contained:
+            filtered_blocks.append(blocks[i])
+    return filtered_blocks
+
+
 def merge_all(blocks, page_width, page_height):
     """应用所有合并规则和过滤规则"""
     if len(blocks) < 5:
@@ -218,4 +243,6 @@ def merge_all(blocks, page_width, page_height):
     blocks = merge_equation_with_neighbors(blocks)
     blocks = filter_small_header_footer(blocks)
     blocks = merge_consecutive_title_title_text(blocks)
+    blocks = remove_contained_blocks(blocks)
+    blocks = merge_overlapping_blocks(blocks)
     return blocks

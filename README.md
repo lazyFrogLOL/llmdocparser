@@ -97,10 +97,10 @@ If using Azure, the azure_deployment and azure_endpoint parameters need to be pa
 
 Using the 'Attention Is All You Need' paper for analysis, the model chosen is GPT-4o, costing as follows:
 ```
-Total Tokens: 50359
-Prompt Tokens: 38914
-Completion Tokens: 11445
-Total Cost (USD): $0.3662449999999998
+Total Tokens: 44063
+Prompt Tokens: 33812
+Completion Tokens: 10251
+Total Cost (USD): $0.322825
 ```
-Average cost per page: $0.0244
+Average cost per page: $0.0215
 
