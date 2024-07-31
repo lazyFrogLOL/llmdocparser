@@ -104,3 +104,5 @@ Total Cost (USD): $0.322825
 ```
 Average cost per page: $0.0215
 
+
+<iframe style="width:100%;height:auto;min-width:600px;min-height:400px;" src="https://star-history.com/embed?secret=Z2hwX1dOMzRNRG9tY3RLZmVMRktLQlJrNGNrUEVqQ1RCeDNPcXB6cg==#lazyFrogLOL/llmdocparser&Date" frameBorder="0"></iframe>
