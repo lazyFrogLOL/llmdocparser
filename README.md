@@ -32,18 +32,18 @@ This result includes the type, coordinates, and reading order of each region. By
 
 Finally, input the images of the corresponding regions into a multimodal model, such as GPT-4o or Qwen-VL, to directly obtain text blocks that are friendly to RAG solutions.
 
-| filepath                                  | type            | page_no | filename                  | content               |
-|-------------------------------------------|-----------------|---------|---------------------------|-----------------------|
-| output/page_1_title.png                   | Title           | 1       | attention is all you need | [Text Block 1]        |
-| output/page_1_text.png                    | Text            | 1       | attention is all you need | [Text Block 2]        |
-| output/page_2_figure.png                  | Figure          | 2       | attention is all you need | [Text Block 3]        |
-| output/page_2_figure_caption.png          | Figure caption  | 2       | attention is all you need | [Text Block 4]        |
-| output/page_3_table.png                   | Table           | 3       | attention is all you need | [Text Block 5]        |
-| output/page_3_table_caption.png           | Table caption   | 3       | attention is all you need | [Text Block 6]        |
-| output/page_1_header.png                  | Header          | 1       | attention is all you need | [Text Block 7]        |
-| output/page_2_footer.png                  | Footer          | 2       | attention is all you need | [Text Block 8]        |
-| output/page_3_reference.png               | Reference       | 3       | attention is all you need | [Text Block 9]        |
-| output/page_1_equation.png                | Equation        | 1       | attention is all you need | [Text Block 10]       |
+| img_path                                  | type            | page_no | filename                  | content               |      filepath                 |
+|-------------------------------------------|-----------------|---------|---------------------------|-----------------------|-----------------------|
+| {absolute_path}/page_1_title.png                   | Title           | 1       | attention is all you need | [Text Block 1]        |     {file_absolute_path}         |
+| {absolute_path}/page_1_text.png                    | Text            | 1       | attention is all you need | [Text Block 2]        |        {file_absolute_path}        |
+| {absolute_path}/page_2_figure.png                  | Figure          | 2       | attention is all you need | [Text Block 3]        |         {file_absolute_path}       |
+| {absolute_path}/page_2_figure_caption.png          | Figure caption  | 2       | attention is all you need | [Text Block 4]        |         {file_absolute_path}       |
+| {absolute_path}/page_3_table.png                   | Table           | 3       | attention is all you need | [Text Block 5]        |        {file_absolute_path}        |
+| {absolute_path}/page_3_table_caption.png           | Table caption   | 3       | attention is all you need | [Text Block 6]        |        {file_absolute_path}        |
+| {absolute_path}/page_1_header.png                  | Header          | 1       | attention is all you need | [Text Block 7]        |        {file_absolute_path}        |
+| {absolute_path}/page_2_footer.png                  | Footer          | 2       | attention is all you need | [Text Block 8]        |          {file_absolute_path}      | 
+| {absolute_path}/page_3_reference.png               | Reference       | 3       | attention is all you need | [Text Block 9]        |         {file_absolute_path}       |
+| {absolute_path}/page_1_equation.png                | Equation        | 1       | attention is all you need | [Text Block 10]       |         {file_absolute_path}       |
 
 See more in llm_parser.py main function.
 

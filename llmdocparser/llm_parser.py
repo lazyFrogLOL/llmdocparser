@@ -1,12 +1,9 @@
 import os
 from typing import List, Optional
-import logging
 import pandas as pd
 from llmdocparser.parser.layout_parser import parse_pdf_to_images
 from llmdocparser.llm_chain.llm_inference import analyze_images_batch
 from llmdocparser.llm_chain.llm_factory import LLMFactory
-
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 class ImageContentAnalyzer:

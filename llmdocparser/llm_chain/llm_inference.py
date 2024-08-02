@@ -5,7 +5,8 @@ from PIL import Image
 from io import BytesIO
 import base64
 from langchain_community.callbacks import get_openai_callback
-
+from langchain_core.callbacks import StdOutCallbackHandler
+from log_config import logger
 
 # This Default Prompt Using Chinese and could be changed to other languages.
 
@@ -63,7 +64,7 @@ def analyze_images_batch(
         # 将图像转换为base64并构造消息批次
         message_batches = []
         for _, row in df.iterrows():
-            image_data = image_to_base64(row['filepath'])
+            image_data = image_to_base64(row['img_path'])
             user_prompt = user_prompt_template.format(type=row['type'])
             message_batches.append(construct_message(system_prompt, user_prompt, image_data))
 
@@ -75,10 +76,10 @@ def analyze_images_batch(
         # 调用LLM模型的batch方法
         with get_openai_callback() as cb:
             responses = llm.batch(message_batches, config=batch_config)
-            print(f"Total Tokens: {cb.total_tokens}")
-            print(f"Prompt Tokens: {cb.prompt_tokens}")
-            print(f"Completion Tokens: {cb.completion_tokens}")
-            print(f"Total Cost (USD): ${cb.total_cost}")
+            logger.info(f"Total Tokens: {cb.total_tokens}")
+            logger.info(f"Prompt Tokens: {cb.prompt_tokens}")
+            logger.info(f"Completion Tokens: {cb.completion_tokens}")
+            logger.info(f"Total Cost (USD): ${cb.total_cost}")
 
         # 提取每个响应的内容
         contents = [response.content for response in responses]
@@ -89,5 +90,5 @@ def analyze_images_batch(
         return df
 
     except Exception as e:
-        print(f"An error occurred: {str(e)}")
+        logger.error(f"An error occurred: {str(e)}")
         raise
