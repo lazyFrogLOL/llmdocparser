@@ -53,6 +53,32 @@ See more in llm_parser.py main function.
 pip install llmdocparser
 ```
 
+### Installation from Source
+
+To install this project from source, follow these steps:
+
+1. **Clone the Repository:**
+
+   First, clone the repository to your local machine. Open your terminal and run the following commands:
+
+   ```bash
+   git clone https://github.com/lazyFrogLOL/llmdocparser.git
+   cd llmdocparser
+   ```
+
+2. **Install Dependencies:**
+
+   This project uses Poetry for dependency management. Make sure you have Poetry installed. If not, you can follow the instructions in the [Poetry Installation Guide](https://python-poetry.org/docs/#installation).
+
+   Once Poetry is installed, run the following command in the project's root directory to install the dependencies:
+
+   ```bash
+   poetry install
+   ```
+
+   This will read the `pyproject.toml` file and install all the required dependencies for the project.
+
+
 ## Usage
 
 ```python
