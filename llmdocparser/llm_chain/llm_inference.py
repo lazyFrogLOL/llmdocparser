@@ -5,8 +5,7 @@ from PIL import Image
 from io import BytesIO
 import base64
 from langchain_community.callbacks import get_openai_callback
-from langchain_core.callbacks import StdOutCallbackHandler
-from log_config import logger
+from llmdocparser.log_config import logger
 
 # This Default Prompt Using Chinese and could be changed to other languages.
 

@@ -1,9 +1,8 @@
-import logging
 import logging.handlers
 import os
 
 # 确保日志目录存在
-LOG_DIR = "logs"
+LOG_DIR = "../logs"
 if not os.path.exists(LOG_DIR):
     os.makedirs(LOG_DIR)
 
