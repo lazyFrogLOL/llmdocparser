@@ -5,7 +5,6 @@ from PIL import Image
 from io import BytesIO
 import base64
 from langchain_community.callbacks import get_openai_callback
-from llmdocparser.log_config import logger
 
 # This Default Prompt Using Chinese and could be changed to other languages.
 
@@ -75,10 +74,17 @@ def analyze_images_batch(
         # 调用LLM模型的batch方法
         with get_openai_callback() as cb:
             responses = llm.batch(message_batches, config=batch_config)
-            logger.info(f"Total Tokens: {cb.total_tokens}")
-            logger.info(f"Prompt Tokens: {cb.prompt_tokens}")
-            logger.info(f"Completion Tokens: {cb.completion_tokens}")
-            logger.info(f"Total Cost (USD): ${cb.total_cost}")
+            cost_info = {
+                "total_tokens": cb.total_tokens,
+                "prompt_tokens": cb.prompt_tokens,
+                "completion_tokens": cb.completion_tokens,
+                "total_cost_usd": cb.total_cost
+            }
+            print(f"Total Tokens: {cb.total_tokens}")
+            print(f"Prompt Tokens: {cb.prompt_tokens}")
+            print(f"Completion Tokens: {cb.completion_tokens}")
+            print(f"Total Cost (USD): ${cb.total_cost}")
+
 
         # 提取每个响应的内容
         contents = [response.content for response in responses]
@@ -86,8 +92,7 @@ def analyze_images_batch(
         # 将内容添加到DataFrame中
         df['content'] = contents
 
-        return df
+        return df, cost_info
 
     except Exception as e:
-        logger.error(f"An error occurred: {str(e)}")
         raise

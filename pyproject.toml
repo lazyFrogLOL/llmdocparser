@@ -23,6 +23,7 @@ numpy="1.26.4"
 langchain="0.2.11"
 langchain_openai="0.1.17"
 langchain_community="0.2.10"
+pandas="2.2.2"
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.3"
 pytest-asyncio = "^0.21.1"

@@ -84,7 +84,7 @@ To install this project from source, follow these steps:
 ```python
 from llmdocparser.llm_parser import get_image_content
 
-content = get_image_content(
+content, cost = get_image_content(
     llm_type="azure",
     pdf_path="path/to/your/pdf",
     output_dir="path/to/output/directory",
@@ -95,6 +95,7 @@ content = get_image_content(
     api_version="your_api_version"
 )
 print(content)
+print(cost)
 ```
 
 **Parameters**

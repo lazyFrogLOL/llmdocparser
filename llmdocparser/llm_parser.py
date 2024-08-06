@@ -33,8 +33,8 @@ class ImageContentAnalyzer:
             raise ValueError("LLM has not been initialized. Call initialize_llm first.")
 
         image_info_df = self.parse_images(pdf_path, output_dir)
-        result_df = analyze_images_batch(self.llm, image_info_df, max_concurrency=max_concurrency)
-        return result_df
+        result_df, cost_info = analyze_images_batch(self.llm, image_info_df, max_concurrency=max_concurrency)
+        return result_df, cost_info
 
 
 def get_image_content(llm_type: str, pdf_path: str, output_dir: str, max_concurrency: Optional[int] = None, **llm_kwargs) -> pd.DataFrame:
@@ -51,7 +51,7 @@ if __name__ == "__main__":
     api_key = os.getenv('AZURE_OPENAI_API_KEY')
     base_url = os.getenv('AZURE_OPENAI_API_BASE')
 
-    content = get_image_content(
+    content, cost = get_image_content(
         llm_type="azure",
         pdf_path="llmdocparser/example/attention_is_all_you_need.pdf",
         output_dir="output/",
@@ -62,3 +62,4 @@ if __name__ == "__main__":
         api_version="2024-02-01"
     )
     print(content)
+    print(cost)
